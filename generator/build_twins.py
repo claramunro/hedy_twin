@@ -104,6 +104,8 @@ main{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;min-w
 .chip.peach{background:#FED7AA;color:#9A3412}
 .chip.rose{background:#FFE4E6;color:#9F1239}
 .year{font-size:14px;font-weight:600;color:var(--n40);padding:12px 0}
+.seltopic{margin-top:6px;display:inline-flex;align-items:center;gap:2px;height:28px;padding:0 4px 0 8px;border-radius:6px;background:rgba(238,238,238,.6);border:1px solid #E0E0E0;font-size:11px;color:#757575}
+.seltopic svg{margin-right:4px}
 /* Empty detail state */
 .empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
 .empty .eicon{color:rgba(111,111,111,.5);display:flex}
@@ -622,6 +624,8 @@ def cards(selected_first=False):
     for k, (title, meta, audio, chip) in enumerate(SESSIONS):
         icon = session_play if audio else i_filetext_card
         icb = f'<span class="icb">{material("cloud_done", 8)}</span>' if audio else ""
+        if not chip:
+            chip = f'<span class="seltopic">Select Topic {material("keyboard_arrow_down", 14)}</span>' 
         sel = " sel" if (selected_first and k == 0) else ""
         href = DASH if (selected_first and k == 0) else DETAIL
         out.append(f'''<a class="card{sel}" href="{href}" data-t="{title}"><span class="cicon">{icon}{icb}</span><div class="cc">
@@ -1940,6 +1944,7 @@ DARK_OVERRIDES = """<style>
 .rail{background:#323232}
 .dchat{background:#222222}
 .mni{background:#3A3A3A}
+.seltopic{background:rgba(66,66,66,.5);border-color:#616161;color:#BDBDBD}
 .bubble.hedy{background:#323232;color:#F8F8F8}
 .tab.sel{background:#3D3D3D;color:#FFFFFF}
 .sditem.sel{background:#3A3A3A}
@@ -2037,6 +2042,8 @@ def mobile_cards():
         icon = session_play if audio else i_filetext_card
         icb = f'<span class="micb">{material("cloud_done", 8)}</span>' if audio else ""
         chip_m = chip.replace('class="chip', 'class="mchip')
+        if not chip_m:
+            chip_m = f'<span class="seltopic">Select Topic {material("keyboard_arrow_down", 14)}</span>' 
         out.append(f'''<div class="mcard"><span class="cicon">{icon}{icb}</span><div class="mcc">
 <div class="mct">{title}</div><div class="mcm">{meta}</div>{chip_m}</div></div>''')
     return "\n".join(out)
