@@ -1992,6 +1992,8 @@ MOBILE_UI_CSS = """
 .mchip.amber{background:#FDE68A;color:#92400E}
 .mchip.peach{background:#FED7AA;color:#9A3412}
 .mchip.rose{background:#FFE4E6;color:#9F1239}
+.seltopic{margin-top:6px;display:inline-flex;align-items:center;gap:2px;height:28px;padding:0 4px 0 8px;border-radius:6px;background:rgba(238,238,238,.6);border:1px solid #E0E0E0;font-size:11px;color:#757575}
+.seltopic svg{margin-right:4px}
 .myear{font-size:14px;font-weight:600;color:#6F6F6F;padding:12px 0}
 /* bottom nav (adaptive_dashboard.dart:669) */
 .mnav{position:absolute;left:0;right:0;bottom:0;height:90px;padding:12px 12px 34px;background:rgba(251,250,249,.95);border-top:1px solid #E8E4DE;display:flex;align-items:center;justify-content:space-around}
