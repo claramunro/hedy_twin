@@ -33,6 +33,21 @@ stay on the `app-twin-2026-07-08` branch (or its successor) — `main` is never 
 
 ---
 
+## 2026-07-23 — pipeline drill (simulated change, later reverted)
+
+End-to-end test of the sync pipeline using local branch `twin-sync-sim` standing in
+for origin/main. Reviewed: 1 commit (28b5a9cd "style: darken count badge background
+in light mode").
+- 28b5a9cd → visual: count badge light bg grey.shade200 (#EEEEEE) → grey.shade300
+  (#E0E0E0). Implemented as `.count` change + dark override `.count{background:#424242}`
+  (because #E0E0E0 already dark-maps to #3D3D3D for borders — selector override keeps
+  the badge's dark color correct). Pages touched: all pages with count badges
+  (dashboard, topics, highlights bars); verified light #E0E0E0 / dark #424242.
+- Published via hedy_twin push de07467 → Vercel auto-deploy. REVERTED after
+  verification because the sim commit is not on real main (1:1 rule).
+Mock-data decisions: none.
+Deployed: https://apptwin-six.vercel.app
+
 ## 2026-07-11 — baseline, synced to origin/main@623dd6f1
 
 The twin currently reflects `main` as of `623dd6f1` ("fix(windows): use
