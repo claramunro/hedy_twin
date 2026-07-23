@@ -42,6 +42,21 @@ stay on the `app-twin-2026-07-08` branch (or its successor) — `main` is never 
 
 ---
 
+## 2026-07-23 — Mobile 390 begins: Sessions Dashboard + Figma side-by-side layout
+
+- Built the mobile (iPhone 390×844) Sessions Dashboard 1:1 from _buildMobileLayout /
+  _buildSmallScreenTopBar @ dbb0f260c: 47px status inset, scrolling header (title +
+  count + Filters pill + overflow ⋮ — no inline Merge/Select/Refresh on iOS), sort
+  row, full-width cards, glass bottom nav (Start Session first item, 5 icon items).
+- The main dashboard URL is now RESPONSIVE <768px (mobile layout embedded behind a
+  media query, device-width viewport) — one URL covers wide/medium/mobile like the
+  real app. Dedicated *-mobile-{light,dark}-390.html pages remain as Figma capture
+  targets.
+- Figma: Brand-page rows re-spaced to 2000px slots (mobile sits right of each
+  desktop frame). Mobile dashboard captured + cropped to 390×844, placed, named
+  "App Twin — Sessions Dashboard ({Theme} · Mobile 390)" (839:4 / 840:4).
+- Remaining screens' mobile layouts: queued (one-screen-at-a-time from _buildMobile*).
+
 ## 2026-07-23 — FIRST REAL SYNC (partial): Sessions Dashboard → origin/main@dbb0f260c
 
 origin/main moved 1,464 commits past baseline (≈380 UI-relevant) — too many for
