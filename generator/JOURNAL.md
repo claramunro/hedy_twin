@@ -15,7 +15,16 @@ Trigger: Clara says **"update the twin"**. Never run automatically.
 5. Implement visual changes in `build_twins.py` ONLY (never hand-edit generated HTML), rebuild, verify affected pages at 1440×900 and at <1280px.
 6. Publish: copy `app_twin/*.html` + generator sources (`build_twins.py`, `glyphs.py`, `fonts.css`, `lucide/`, `JOURNAL.md`) into a clone of `https://github.com/claramunro/hedy_twin`, commit, push `main`. Vercel auto-deploys https://apptwin-six.vercel.app from that repo. (CLI `vercel deploy` is the fallback only.)
 7. Append a journal entry (template below) and commit on the twin branch of hedy_mobile. Do not push hedy_mobile without asking.
-8. Figma leg (manual, ~30s/screen): tell Clara which screens changed with their URLs; she runs the html.to.design plugin in Figma → Import from URL → pastes each changed page's URL. New frames land wherever she runs the plugin; she deletes/replaces the stale frames.
+8. Figma leg — consult `FIGMA_KEY.md` (screen ↔ twin URL ↔ Dart source ↔ Figma node IDs)
+   to find which frames are stale, then pick per screen:
+   a. **Small delta** (color, text, spacing, icon swap): patch the EXISTING frames
+      in place via the Figma MCP `use_figma` (load the /figma-use skill first; target
+      the frame subtree by its node ID from the key). No reimport; Clara's file needs
+      to be open in the Figma desktop app.
+   b. **Structural change or new screen**: reimport just that screen — Clara pastes
+      the page URL into html.to.design → Import from URL, deletes the stale frame,
+      and the key's node ID gets updated.
+   Keep FIGMA_KEY.md current: add rows for new screens, refresh node IDs after imports.
 
 Entry template:
 
@@ -32,6 +41,26 @@ Rules: 1:1 with code (no invented visuals; only mock data is invented). All chan
 stay on the `app-twin-2026-07-08` branch (or its successor) — `main` is never modified.
 
 ---
+
+## 2026-07-23 — FIRST REAL SYNC (partial): Sessions Dashboard → origin/main@dbb0f260c
+
+origin/main moved 1,464 commits past baseline (≈380 UI-relevant) — too many for
+commit-by-commit triage, so the strategy is **re-baseline per screen** (read each
+screen's current Dart, update the twin to match). This entry covers the Sessions
+Dashboard only:
+- NEW Filters button (sliders-horizontal 300, first in right cluster) — session_filter/filter_button.dart
+- Select button icon: listFilter300 → squareCheck300 — transcript_screen.dart:2196
+- Import menu now 3 items: Import Audio File / Import Online Video / Create Session
+  from Transcript (audio_file_outlined, play_circle_outline, text_snippet_outlined)
+- Sort menu gains "Grouped by date" option
+- NEW iCloud-synced corner badge on audio session cards (#5BC8FF→#0A8EF0 gradient
+  circle, cloud_done 8px, 1.5px card border, top-right of icon) — icloud_synced_badge.dart
+- Count badge: verified unchanged on desktop (drill revert was correct)
+Mock-data decisions: all 4 audio sessions shown as iCloud-synced.
+**All other screens remain at 623dd6f1 and are now known-stale** — queued for
+per-screen re-baseline. FIGMA_KEY rows for the dashboard are stale in Figma until
+re-imported.
+Deployed: https://apptwin-six.vercel.app
 
 ## 2026-07-23 — pipeline drill (simulated change, later reverted)
 

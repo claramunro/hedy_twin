@@ -94,7 +94,8 @@ main{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;min-w
 .cards{flex:1;overflow:hidden;padding:0 16px}
 .card{background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:12px;padding:17px 16px;display:flex;gap:20px;align-items:flex-start}
 .card.sel{background:#FFF5F0;border-color:#FFD4C4}
-.card .cicon{color:var(--icon);flex-shrink:0;padding-top:2px;display:flex}
+.card .cicon{color:var(--icon);flex-shrink:0;padding-top:2px;display:flex;position:relative}
+.icb{position:absolute;top:-4px;right:-4px;width:13px;height:13px;border-radius:50%;background:linear-gradient(180deg,#5BC8FF,#0A8EF0);border:1.5px solid var(--card);display:flex;align-items:center;justify-content:center;color:#fff}
 .cc{flex:1;min-width:0}
 .ct{font-size:13.3px;color:var(--card-title);line-height:1.4;margin-bottom:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .cm{font-size:11.1px;color:var(--card-meta)}
@@ -511,8 +512,9 @@ i_nav = {
     "Settings": lucide("settings", 20, 200),
     "Search": lucide("search", 20, 200),
 }
+i_filters = lucide("sliders-horizontal", 18, 300)
 i_merge = lucide("merge", 18, 300)
-i_select = lucide("list-filter", 18, 300)
+i_select = lucide("square-check", 18, 300)
 i_refresh = lucide("refresh-cw", 18, 300)
 i_import = lucide("download", 18, 300)
 i_chev = lucide("chevron-down", 14, 400)
@@ -587,7 +589,8 @@ PRO_BADGE = '<span class="pro">PRO</span>'
 
 def topbar(title="Sessions", count="14", pro=False, buttons=None):
     if buttons is None:
-        buttons = (f'<a class="tbtn" href="{MERGE}">{i_merge}Merge Sessions</a>'
+        buttons = (f'<span class="tbtn">{i_filters}Filters</span>'
+                   f'<a class="tbtn" href="{MERGE}">{i_merge}Merge Sessions</a>'
                    f'<span class="tbtn">{i_select}Select</span>'
                    f'<span class="tbtn">{i_refresh}Refresh</span>'
                    f'<span class="tbtn">{i_import}Import {i_chev}</span>')
@@ -611,9 +614,10 @@ def cards(selected_first=False):
     out = ['<div class="sort"><span class="si">' + i_sortud + '</span><span>Date</span><span class="sc">' + i_chev + "</span></div>", '<div class="cards">']
     for k, (title, meta, audio, chip) in enumerate(SESSIONS):
         icon = session_play if audio else i_filetext_card
+        icb = f'<span class="icb">{material("cloud_done", 8)}</span>' if audio else ""
         sel = " sel" if (selected_first and k == 0) else ""
         href = DASH if (selected_first and k == 0) else DETAIL
-        out.append(f'''<a class="card{sel}" href="{href}" data-t="{title}"><span class="cicon">{icon}</span><div class="cc">
+        out.append(f'''<a class="card{sel}" href="{href}" data-t="{title}"><span class="cicon">{icon}{icb}</span><div class="cc">
 <div class="ct">{title}</div><div class="cm">{meta}</div>{chip}</div></a>''')
     out.append('<div class="year">2025</div></div>')
     return '<div class="listpane">' + "\n".join(out) + "</div>"
@@ -2093,11 +2097,13 @@ ROUTES_JSON = "{" + ",".join(
     f'"{meta["slug"]}":{{"file":"{f}","cls":"{meta["cls"]}"}}' for f, meta in route_meta.items()) + "}"
 
 MENUS = {
-    "sort-sessions": [{"t": "Most Recent", "sel": True}, {"t": "Oldest"}],
+    "sort-sessions": [{"t": "Most Recent", "sel": True}, {"t": "Oldest"}, {"t": "Grouped by date"}],
     "sort-topics": [{"t": "Last Activity", "sel": True}, {"t": "Name (A-Z)"},
                     {"t": "Most Active"}, {"t": "Recently Created"}, {"t": "Starred"}],
     "sort-highlights": [{"t": "Highlights", "sel": True}, {"t": "By Session"}, {"t": "By Topic"}],
-    "import": [{"t": "Create Session from Audio File"}, {"t": "Import from YouTube"}],
+    "import": [{"ic": material("audio_file_outlined", 20), "t": "Import Audio File"},
+               {"ic": material("play_circle_outline", 20), "t": "Import Online Video"},
+               {"ic": material("text_snippet_outlined", 20), "t": "Create Session from Transcript"}],
     "session-menu": [
         {"ic": material("link", 20), "t": "Copy link to session"},
         {"ic": material("person_add", 20), "t": "Invite to Session"},
