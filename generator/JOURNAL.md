@@ -22,8 +22,10 @@ Trigger: Clara says **"update the twin"**. Never run automatically.
    - One artboard per screen (mostly); show component states in-context ON that artboard
      (e.g. dashboard: sort dropdown open + one assigned chip + one "Select Topic" chip).
    - Every modal/dialog is its OWN small artboard ("App Twin — Modal · {Name} ({Theme})").
-   - Capture-only "artboard" page variants may differ from the clean browsing pages
-     (e.g. a menu pinned open); generator emits both, only artboard variants get captured.
+   - NO pinned-open dropdowns on artboards (Clara: too distracting). Component states like
+     open dropdowns live in the PROTOTYPE as real interactions (app-styled menus with
+     type-to-filter search; selections fake the state update, e.g. picking a topic swaps
+     the card's chip). Artboards stay clean; modals still get their own chunk artboards.
 5. Implement visual changes in `build_twins.py` ONLY (never hand-edit generated HTML), rebuild, verify affected pages at 1440×900 and at <1280px.
 6. Publish: copy `app_twin/*.html` + generator sources (`build_twins.py`, `glyphs.py`, `fonts.css`, `lucide/`, `JOURNAL.md`) into a clone of `https://github.com/claramunro/hedy_twin`, commit, push `main`. Vercel auto-deploys https://apptwin-six.vercel.app from that repo. (CLI `vercel deploy` is the fallback only.)
 7. Append a journal entry (template below) and commit on the twin branch of hedy_mobile. Do not push hedy_mobile without asking.

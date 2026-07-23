@@ -103,6 +103,8 @@ main{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;min-w
 .chip.amber{background:#FDE68A;color:#92400E}
 .chip.peach{background:#FED7AA;color:#9A3412}
 .chip.rose{background:#FFE4E6;color:#9F1239}
+.chip.mint{background:rgba(16,185,129,.12);color:#059669}
+.chip.sky{background:rgba(59,130,246,.12);color:#2563EB}
 .year{font-size:14px;font-weight:600;color:var(--n40);padding:12px 0}
 .seltopic{margin-top:6px;display:inline-flex;align-items:center;gap:2px;height:28px;padding:0 4px 0 8px;border-radius:6px;background:rgba(238,238,238,.6);border:1px solid #E0E0E0;font-size:11px;color:#757575}
 .seltopic svg{margin-right:4px}
@@ -2237,6 +2239,12 @@ MENUS = {
         {"ic": material("block", 20), "t": "Revoke Access", "red": True, "modal": "revoke"}],
     "type": [{"t": "Business Meeting", "sel": True}, {"t": "Group Brainstorm"},
              {"t": "Job Interview"}, {"t": "Medical Consultation"}, {"t": "Negotiation"}],
+    "topics": [
+        {"t": "Acme Corp", "dot": "#FDE68A", "chip": "amber"},
+        {"t": "Health", "dot": "#FECDD3", "chip": "rose"},
+        {"t": "Roadmap", "dot": "#FED7AA", "chip": "peach"},
+        {"t": "Hiring", "dot": "#A7F3D0", "chip": "mint"},
+        {"t": "Learning", "dot": "#BFDBFE", "chip": "sky"}],
     "lang": [{"t": "English", "sel": True}, {"t": "Español"}, {"t": "Français"},
              {"t": "Deutsch"}, {"t": "Português"}],
     "stt": [{"t": "Local (Whisper)", "sel": True}, {"t": "Deepgram"}],
@@ -2309,10 +2317,20 @@ function showMenu(trigger, key, onPick) {
   closeMenu();
   const m = document.createElement('div');
   m.className = 'popmenu';
-  m.innerHTML = MENUS[key].map((it, i) =>
+  const search = key === 'topics' ? '<input class="pms" placeholder="Search topics...">' : '';
+  m.innerHTML = search + MENUS[key].map((it, i) =>
     `<div class="pmi${it.red ? ' red' : ''}${it.sel ? ' on' : ''}" data-i="${i}">` +
+    (it.dot ? `<span class="pdot" style="background:${it.dot}"></span>` : '') +
     (it.ic || '') + `<span>${it.t}</span></div>`).join('');
   document.body.appendChild(m);
+  const inp = m.querySelector('.pms');
+  if (inp) {
+    inp.addEventListener('input', () => {
+      const q = inp.value.toLowerCase();
+      m.querySelectorAll('.pmi').forEach(n => { n.style.display = n.textContent.toLowerCase().includes(q) ? '' : 'none'; });
+    });
+    setTimeout(() => inp.focus(), 0);
+  }
   const r = trigger.getBoundingClientRect();
   m.style.left = Math.min(r.left, innerWidth - m.offsetWidth - 12) + 'px';
   m.style.top = Math.min(r.bottom + 4, innerHeight - m.offsetHeight - 12) + 'px';
@@ -2406,6 +2424,20 @@ document.addEventListener('click', (e) => {
     return;
   }
 
+  /* topic assignment dropdown: Select Topic + assigned chips */
+  const tchip = e.target.closest('.seltopic, .cc .chip, .mcc .mchip');
+  if (tchip && !e.target.closest('.pms')) {
+    e.preventDefault();
+    showMenu(tchip, 'topics', (t) => {
+      const it = MENUS.topics.find(x => x.t === t);
+      const mobile = tchip.classList.contains('mchip');
+      const span = document.createElement('span');
+      span.className = (mobile ? 'mchip ' : 'chip ') + it.chip;
+      span.textContent = t;
+      tchip.replaceWith(span);
+    });
+    return;
+  }
   /* modal triggers */
   const del = e.target.closest('.delbtn');
   if (del) {
@@ -2548,22 +2580,6 @@ for slug, title, dlg in [("merge-sessions", "Merge Sessions", merge_dialog),
     open(f"{TW}/hedy-modal-{slug}-dark.html", "w", encoding="utf-8").write(dk)
     CHUNK_FILES.append((title, fname))
 
-# ---------- dashboard "artboard" variant: sort menu pinned open (capture-only) ----------
-ARTBOARD_MENU_CSS = """
-.popmenu{position:absolute;z-index:60;min-width:200px;background:var(--card);border:1px solid var(--border);border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.15);padding:4px}
-.pmi{display:flex;align-items:center;gap:10px;padding:0 14px;height:44px;border-radius:6px;font-size:14px;color:var(--ink)}
-.pmi.on{color:var(--orange);font-weight:600}
-"""
-_menu_open = ('<div class="popmenu" style="left:104px;top:104px">'
-              '<div class="pmi on">Most Recent</div><div class="pmi">Oldest</div>'
-              '<div class="pmi">Grouped by date</div></div>')
-art_html = dash_html.replace("</head>", f"<style>{ARTBOARD_MENU_CSS}</style></head>")
-art_html = art_html.replace('<div class="mob">', _menu_open + '\n<div class="mob">')
-art_html = art_html.replace("(Light, 1440)", "· Artboard (Light, 1440)")
-open(f"{TW}/hedy-sessions-dashboard-artboard-light-1440.html", "w", encoding="utf-8").write(art_html)
-art_dark = darken(art_html)
-open(f"{TW}/hedy-sessions-dashboard-artboard-dark-1440.html", "w", encoding="utf-8").write(art_dark)
-
 app_html = f'''<!DOCTYPE html>
 <html lang="en"><head>
 <meta charset="utf-8">
@@ -2593,6 +2609,8 @@ a{{cursor:pointer}}
 .pmi.on{{color:var(--orange);font-weight:600}}
 .pmi.red,.pmi.red svg{{color:#D32F2F}}
 .pmi svg{{color:var(--icon);flex-shrink:0}}
+.pms{{display:block;margin:4px;padding:8px 10px;border-radius:6px;border:1px solid var(--border);background:var(--bg);font-size:13px;color:var(--n40);font-family:'Inter',sans-serif;width:calc(100% - 8px);outline:none}}
+.pdot{{width:14px;height:14px;border-radius:4px;flex-shrink:0}}
 .modalovl{{position:fixed;inset:0;z-index:70;background:rgba(0,0,0,.54);display:flex;align-items:center;justify-content:center}}
 .modal{{width:400px;background:var(--card);border-radius:12px;padding:24px;box-shadow:0 8px 32px rgba(0,0,0,.25)}}
 .modal h3{{font-size:18px;font-weight:600;color:var(--ink);margin-bottom:12px}}
