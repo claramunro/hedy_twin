@@ -84,7 +84,7 @@ a{color:inherit;text-decoration:none}
 main{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;min-width:0}
 .topbar{min-height:56px;padding:10px 16px;display:flex;align-items:center;gap:8px}
 .topbar h1{font-size:18px;font-weight:600;color:var(--ink)}
-.count{width:24px;height:24px;border-radius:50%;background:#EEEEEE;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:var(--n40)}
+.count{width:24px;height:24px;border-radius:50%;background:#E0E0E0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:var(--n40)}
 .sp{flex:1}
 .tbtn{display:inline-flex;align-items:center;gap:8px;min-height:36px;padding:8px 12px;border-radius:8px;background:rgba(240,237,233,.5);border:1px solid #E8E3DC;color:var(--tb-fg);font-size:13px;font-weight:500}
 .content{flex:1;display:flex;min-height:0}
@@ -1925,6 +1925,7 @@ DARK_OVERRIDES = """<style>
 :root{--card:#2A2A2A}
 .rail{background:#323232}
 .dchat{background:#222222}
+.count{background:#424242}
 .bubble.hedy{background:#323232;color:#F8F8F8}
 .tab.sel{background:#3D3D3D;color:#FFFFFF}
 .sditem.sel{background:#3A3A3A}

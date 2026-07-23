@@ -12,9 +12,10 @@ Trigger: Clara says **"update the twin"**. Never run automatically.
 2. Read the last synced SHA from the newest entry below.
 3. `git log <last-sha>..origin/main --oneline -- lib/screens lib/components lib/widgets lib/dialogs lib/utils/colors.dart lib/utils/theme_config.dart lib/l10n assets/images` — UI-relevant commits only.
 4. Triage each commit's diff: **visual change** (colors/spacing/strings/icons/layout), **new UI** (needs a new twin page), or **no visual impact** (log + skip).
-5. Implement visual changes in `build_twins.py` ONLY (never hand-edit generated HTML), rebuild, verify affected pages at 1440×900 and at <1280px, redeploy to Vercel (`vercel deploy --prod --yes --scope claramunros-projects` from `app_twin/`).
-6. Append a journal entry (template below) and commit on the twin branch. Do not push without asking.
-7. Figma recapture of affected frames is a separate, optional follow-up.
+5. Implement visual changes in `build_twins.py` ONLY (never hand-edit generated HTML), rebuild, verify affected pages at 1440×900 and at <1280px.
+6. Publish: copy `app_twin/*.html` + generator sources (`build_twins.py`, `glyphs.py`, `fonts.css`, `lucide/`, `JOURNAL.md`) into a clone of `https://github.com/claramunro/hedy_twin`, commit, push `main`. Vercel auto-deploys https://apptwin-six.vercel.app from that repo. (CLI `vercel deploy` is the fallback only.)
+7. Append a journal entry (template below) and commit on the twin branch of hedy_mobile. Do not push hedy_mobile without asking.
+8. Figma leg (manual, ~30s/screen): tell Clara which screens changed with their URLs; she runs the html.to.design plugin in Figma → Import from URL → pastes each changed page's URL. New frames land wherever she runs the plugin; she deletes/replaces the stale frames.
 
 Entry template:
 
