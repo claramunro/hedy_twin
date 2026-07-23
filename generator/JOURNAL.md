@@ -12,6 +12,12 @@ Trigger: Clara says **"update the twin"**. Never run automatically.
 2. Read the last synced SHA from the newest entry below.
 3. `git log <last-sha>..origin/main --oneline -- lib/screens lib/components lib/widgets lib/dialogs lib/utils/colors.dart lib/utils/theme_config.dart lib/l10n assets/images` — UI-relevant commits only.
 4. Triage each commit's diff: **visual change** (colors/spacing/strings/icons/layout), **new UI** (needs a new twin page), or **no visual impact** (log + skip).
+   **Depth rule (Clara, 2026-07-23): go past the default render.** For every touched
+   component, enumerate its conditional visual STATES from the Dart (every branch that
+   changes visuals: assigned/unassigned, empty/filled, open dropdown incl. its search
+   field, hover, active, error, disabled) and either represent each state in the twin
+   (page state or prototype interaction) or explicitly log it as not-shown. The
+   "Select Topic" unassigned-chip miss is the cautionary example.
 5. Implement visual changes in `build_twins.py` ONLY (never hand-edit generated HTML), rebuild, verify affected pages at 1440×900 and at <1280px.
 6. Publish: copy `app_twin/*.html` + generator sources (`build_twins.py`, `glyphs.py`, `fonts.css`, `lucide/`, `JOURNAL.md`) into a clone of `https://github.com/claramunro/hedy_twin`, commit, push `main`. Vercel auto-deploys https://apptwin-six.vercel.app from that repo. (CLI `vercel deploy` is the fallback only.)
 7. Append a journal entry (template below) and commit on the twin branch of hedy_mobile. Do not push hedy_mobile without asking.
