@@ -1905,6 +1905,9 @@ DARK_MAP = {
     "rgba(255,255,255,.75)": "rgba(42,42,42,.75)",
     # selection tints (enhanced_nav_button.dart, topic_details, highlights_screen)
     "#FFF5F0": "#3D2E25", "#E8C4B8": "#5A4035", "#FFD4C4": "#5A4035",
+    # mobile scaffold (adaptive_dashboard.dart mobile nav)
+    "rgba(251,250,249,.95)": "rgba(50,50,50,.95)", "#F5F5F5": "#3A3A3A",
+    "#D8D2CC": "rgba(255,255,255,.1)", "#FFF0E5": "#3D3530",
     "#FFF0E8": "#4A3328", "#F9F7F5": "#2D2D2D",
     "#EFF8F0": "#1E3225", "#FFF8E1": "#3D3520",
     # neutrals / fills
@@ -1951,6 +1954,96 @@ def darken(html):
     out = out.replace("(Light, 1440)", "(Dark, 1440)")
     out = out.replace("</head>", DARK_OVERRIDES + "\n</head>")
     return out
+
+# ---------- mobile pages (390x844, from _buildMobileLayout / non-XL branches @ dbb0f260c) ----------
+MOB_DASH = "hedy-sessions-dashboard-mobile-light-390.html"
+
+MOBILE_CSS = """
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased}
+body{font-family:'Inter',sans-serif;width:390px;height:844px;overflow:hidden;position:relative;
+background:linear-gradient(160deg,#F8EEE4,#FBFAF9);color:#26231A}
+.mstatus{height:47px}
+.mscroll{position:absolute;top:47px;bottom:90px;left:0;right:0;overflow:hidden;padding:0 16px 8px}
+.mtopbar{min-height:56px;padding:10px 0;display:flex;align-items:center;background:#FBFAF9}
+.mtopbar h1{font-size:18px;font-weight:600;color:#26231A}
+.mcount{width:24px;height:24px;border-radius:50%;background:#EEEEEE;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:#6F6F6F;margin-left:8px}
+.msp{flex:1}
+.mfilters{display:inline-flex;align-items:center;gap:8px;min-height:36px;padding:8px 12px;border-radius:8px;background:rgba(240,237,233,.5);border:1px solid #E8E3DC;color:#2B2724;font-size:13px;font-weight:500}
+.mmore{padding:8px;margin-left:4px;color:#26231A;display:flex}
+.msort{padding:6px 4px 8px;display:flex;align-items:center;color:#2B2724;font-size:13px;font-weight:500}
+.msort .si{margin-right:6px;display:flex}.msort .sc{margin-left:4px;display:flex}
+.mcard{background:#FFFFFF;border:1px solid #E8E4DE;border-radius:8px;margin-bottom:12px;padding:17px 16px;display:flex;gap:20px;align-items:flex-start}
+.mcard .cicon{color:#736359;flex-shrink:0;padding-top:2px;display:flex;position:relative}
+.micb{position:absolute;top:-4px;right:-4px;width:13px;height:13px;border-radius:50%;background:linear-gradient(180deg,#5BC8FF,#0A8EF0);border:1.5px solid #FFFFFF;display:flex;align-items:center;justify-content:center;color:#fff}
+.mcc{flex:1;min-width:0}
+.mct{font-size:13.3px;color:#26231A;line-height:1.4;margin-bottom:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.mcm{font-size:11.1px;color:#6F6F6F}
+.mchip{margin-top:6px;display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:9999px;font-size:10px;font-weight:600}
+.mchip.amber{background:#FDE68A;color:#92400E}
+.mchip.peach{background:#FED7AA;color:#9A3412}
+.mchip.rose{background:#FFE4E6;color:#9F1239}
+.myear{font-size:14px;font-weight:600;color:#6F6F6F;padding:12px 0}
+/* bottom nav (adaptive_dashboard.dart:669) */
+.mnav{position:absolute;left:0;right:0;bottom:0;height:90px;padding:12px 12px 34px;background:rgba(251,250,249,.95);border-top:1px solid #E8E4DE;display:flex;align-items:center;justify-content:space-around}
+.mstart{width:56px;height:56px;border-radius:12px;background:#E26515;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.mni{width:44px;height:44px;border-radius:10px;background:#F5F5F5;border:0.5px solid #D8D2CC;display:flex;align-items:center;justify-content:center;color:#736359}
+.mni.sel{background:#FFF0E5;color:#E26515}
+"""
+
+def mobile_page(title, body):
+    return f'''<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=390">
+<title>{title}</title>
+{CAPTURE}
+<style>
+{fontfaces}
+{MOBILE_CSS}
+</style>
+</head><body>
+{body}
+</body></html>'''
+
+glasses_white_24 = glasses_white.replace("height:24px", "height:24px")
+i_mfilters = lucide("sliders-horizontal", 18, 300)
+mi_morevert24 = material("more_vert", 24)
+_mnav_icons = {
+    "Sessions": lucide("file-text", 20, 300), "Topics": lucide("folder-open", 20, 300),
+    "Highlights": lucide("sparkles", 20, 300), "Search": lucide("search", 20, 300),
+    "Settings": lucide("settings", 20, 300)}
+
+def mobile_nav(active="Sessions"):
+    items = [f'<span class="mstart">{glasses_white_24}</span>']
+    for label, ic in _mnav_icons.items():
+        items.append(f'<span class="mni{" sel" if label == active else ""}">{ic}</span>')
+    return '<div class="mnav">' + "".join(items) + '</div>'
+
+def mobile_cards():
+    out = []
+    for title, meta, audio, chip in SESSIONS:
+        icon = session_play if audio else i_filetext_card
+        icb = f'<span class="micb">{material("cloud_done", 8)}</span>' if audio else ""
+        chip_m = chip.replace('class="chip', 'class="mchip')
+        out.append(f'''<div class="mcard"><span class="cicon">{icon}{icb}</span><div class="mcc">
+<div class="mct">{title}</div><div class="mcm">{meta}</div>{chip_m}</div></div>''')
+    return "\n".join(out)
+
+mob_dash_body = f'''<div class="mstatus"></div>
+<div class="mscroll">
+  <div class="mtopbar"><h1>Sessions</h1><span class="mcount">14</span><span class="msp"></span>
+    <span class="mfilters">{i_mfilters}Filters</span><span class="mmore">{mi_morevert24}</span></div>
+  <div class="msort"><span class="si">{i_sortud}</span><span>Most Recent</span><span class="sc">{i_chev}</span></div>
+{mobile_cards()}
+  <div class="myear">2025</div>
+</div>
+{mobile_nav("Sessions")}'''
+
+mob_dash_html = mobile_page("Hedy — Sessions Dashboard (Light, Mobile 390)", mob_dash_body)
+open(f"{TW}/{MOB_DASH}", "w", encoding="utf-8").write(mob_dash_html)
+mob_dash_dark = darken(mob_dash_html).replace("-mobile-light-390.html", "-mobile-dark-390.html").replace("(Light, Mobile 390)", "(Dark, Mobile 390)")
+open(f"{TW}/hedy-sessions-dashboard-mobile-dark-390.html", "w", encoding="utf-8").write(mob_dash_dark)
 
 # ---------- index hub ----------
 def index_page(entries):
@@ -2425,6 +2518,8 @@ a{{cursor:pointer}}
 open(f"{TW}/app.html", "w", encoding="utf-8").write(app_html)
 sizes.append(f"app.html={len(app_html) // 1024}K ({len(app_templates)} screens)")
 
+INDEX_ENTRIES.append(("Sessions Dashboard (Light, Mobile 390)", MOB_DASH))
+INDEX_ENTRIES.append(("Sessions Dashboard (Dark, Mobile 390)", "hedy-sessions-dashboard-mobile-dark-390.html"))
 dark_entries = [(label.replace("(Light)", "(Dark)"),
                  fname.replace("-light-1440.html", "-dark-1440.html"))
                 for label, fname in INDEX_ENTRIES]
