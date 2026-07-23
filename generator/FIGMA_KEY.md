@@ -53,3 +53,17 @@ every (re)import.
 | Onboarding 6 — Challenge | [hedy-onboarding-challenge-light-1440.html](https://apptwin-six.vercel.app/hedy-onboarding-challenge-light-1440.html) | [hedy-onboarding-challenge-dark-1440.html](https://apptwin-six.vercel.app/hedy-onboarding-challenge-dark-1440.html) | `challenge_selection_screen.dart` | `815:5203` | `815:9492` |
 | Onboarding 7 — Sign Up | [hedy-onboarding-signup-light-1440.html](https://apptwin-six.vercel.app/hedy-onboarding-signup-light-1440.html) | [hedy-onboarding-signup-dark-1440.html](https://apptwin-six.vercel.app/hedy-onboarding-signup-dark-1440.html) | `signup_method_screen.dart, signup_method_card.dart` | `815:5255` | `815:9544` |
 | Onboarding 8 — Cloud Sync | [hedy-onboarding-cloud-sync-light-1440.html](https://apptwin-six.vercel.app/hedy-onboarding-cloud-sync-light-1440.html) | [hedy-onboarding-cloud-sync-dark-1440.html](https://apptwin-six.vercel.app/hedy-onboarding-cloud-sync-dark-1440.html) | `cloud_sync_opt_in_screen.dart` | `815:5298` | `815:9587` |
+
+## Modal chunks (own artboards, light; dark pages exist but not yet captured)
+
+| Modal | Chunk page (light) | Node ID |
+|---|---|---|
+| Delete Session | hedy-modal-del-session-light.html | `859:4` |
+| Delete Topic | hedy-modal-del-topic-light.html | `865:4` |
+| Delete Account | hedy-modal-del-account-light.html | `868:4` |
+| Revoke Access | hedy-modal-revoke-light.html | `869:4` |
+| Session Type (help) | hedy-modal-type-help-light.html | `870:4` |
+| Forgot Password | hedy-modal-forgot-light.html | `871:4` |
+| New Topic | hedy-modal-new-topic-light.html | `872:4` |
+| Merge Sessions | hedy-modal-merge-sessions-light.html | `873:4` |
+| Merge Configuration | hedy-modal-merge-config-light.html | `874:4` |
