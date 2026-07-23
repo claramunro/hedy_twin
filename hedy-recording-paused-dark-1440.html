@@ -381,6 +381,13 @@ main{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;min-w
 .sdbmeta{margin-top:4px;display:flex;align-items:center;gap:12px;font-size:13px;color:var(--n40)}
 .sdbmeta .chip{margin-top:0}
 .sdbtabs{margin-top:12px}
+/* Mobile (<768px): dashboard swaps to the phone layout (_buildMobileLayout) */
+.mob{display:none}
+@media (max-width:767px){
+  body.page-sessions{width:100vw;height:100vh;min-width:390px;min-height:600px;background:linear-gradient(160deg,#222222,#1A1A1A)}
+  body.page-sessions .rail,body.page-sessions main{display:none}
+  body.page-sessions .mob{display:block;position:absolute;inset:0}
+}
 /* Medium breakpoint (768-1279px): per-screen medium layouts from the Dart
    _buildMediumScreenLayout builders. Wide (>=1280px) layouts are untouched. */
 @media (max-width:1279px){
@@ -455,6 +462,7 @@ main{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;min-w
 :root{--card:#2A2A2A}
 .rail{background:#323232}
 .dchat{background:#222222}
+.mni{background:#3A3A3A}
 .bubble.hedy{background:#323232;color:#F8F8F8}
 .tab.sel{background:#3D3D3D;color:#FFFFFF}
 .sditem.sel{background:#3A3A3A}

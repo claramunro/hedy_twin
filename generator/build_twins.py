@@ -434,6 +434,13 @@ main{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;min-w
 .sdbmeta{margin-top:4px;display:flex;align-items:center;gap:12px;font-size:13px;color:var(--n40)}
 .sdbmeta .chip{margin-top:0}
 .sdbtabs{margin-top:12px}
+/* Mobile (<768px): dashboard swaps to the phone layout (_buildMobileLayout) */
+.mob{display:none}
+@media (max-width:767px){
+  body.page-sessions{width:100vw;height:100vh;min-width:390px;min-height:600px;background:linear-gradient(160deg,#F8EEE4,#FBFAF9)}
+  body.page-sessions .rail,body.page-sessions main{display:none}
+  body.page-sessions .mob{display:block;position:absolute;inset:0}
+}
 /* Medium breakpoint (768-1279px): per-screen medium layouts from the Dart
    _buildMediumScreenLayout builders. Wide (>=1280px) layouts are untouched. */
 @media (max-width:1279px){
@@ -1906,7 +1913,7 @@ DARK_MAP = {
     # selection tints (enhanced_nav_button.dart, topic_details, highlights_screen)
     "#FFF5F0": "#3D2E25", "#E8C4B8": "#5A4035", "#FFD4C4": "#5A4035",
     # mobile scaffold (adaptive_dashboard.dart mobile nav)
-    "rgba(251,250,249,.95)": "rgba(50,50,50,.95)", "#F5F5F5": "#3A3A3A",
+    "rgba(251,250,249,.95)": "rgba(50,50,50,.95)",
     "#D8D2CC": "rgba(255,255,255,.1)", "#FFF0E5": "#3D3530",
     "#FFF0E8": "#4A3328", "#F9F7F5": "#2D2D2D",
     "#EFF8F0": "#1E3225", "#FFF8E1": "#3D3520",
@@ -1932,6 +1939,7 @@ DARK_OVERRIDES = """<style>
 :root{--card:#2A2A2A}
 .rail{background:#323232}
 .dchat{background:#222222}
+.mni{background:#3A3A3A}
 .bubble.hedy{background:#323232;color:#F8F8F8}
 .tab.sel{background:#3D3D3D;color:#FFFFFF}
 .sditem.sel{background:#3A3A3A}
@@ -1958,11 +1966,7 @@ def darken(html):
 # ---------- mobile pages (390x844, from _buildMobileLayout / non-XL branches @ dbb0f260c) ----------
 MOB_DASH = "hedy-sessions-dashboard-mobile-light-390.html"
 
-MOBILE_CSS = """
-*{box-sizing:border-box;margin:0;padding:0}
-html{-webkit-font-smoothing:antialiased}
-body{font-family:'Inter',sans-serif;width:390px;height:844px;overflow:hidden;position:relative;
-background:linear-gradient(160deg,#F8EEE4,#FBFAF9);color:#26231A}
+MOBILE_UI_CSS = """
 .mstatus{height:47px}
 .mscroll{position:absolute;top:47px;bottom:90px;left:0;right:0;overflow:hidden;padding:0 16px 8px}
 .mtopbar{min-height:56px;padding:10px 0;display:flex;align-items:center;background:#FBFAF9}
@@ -1990,6 +1994,13 @@ background:linear-gradient(160deg,#F8EEE4,#FBFAF9);color:#26231A}
 .mni{width:44px;height:44px;border-radius:10px;background:#F5F5F5;border:0.5px solid #D8D2CC;display:flex;align-items:center;justify-content:center;color:#736359}
 .mni.sel{background:#FFF0E5;color:#E26515}
 """
+
+MOBILE_CSS = """
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased}
+body{font-family:'Inter',sans-serif;width:390px;height:844px;overflow:hidden;position:relative;
+background:linear-gradient(160deg,#F8EEE4,#FBFAF9);color:#26231A}
+""" + MOBILE_UI_CSS
 
 def mobile_page(title, body):
     return f'''<!DOCTYPE html>
@@ -2039,6 +2050,11 @@ mob_dash_body = f'''<div class="mstatus"></div>
   <div class="myear">2025</div>
 </div>
 {mobile_nav("Sessions")}'''
+
+dash_html = dash_html.replace("</body>",
+    f'<style>{MOBILE_UI_CSS}</style>\n<div class="mob">\n{mob_dash_body}\n</div>\n</body>')
+dash_html = dash_html.replace('<meta name="viewport" content="width=1440">',
+                              '<meta name="viewport" content="width=device-width, initial-scale=1">')
 
 mob_dash_html = mobile_page("Hedy — Sessions Dashboard (Light, Mobile 390)", mob_dash_body)
 open(f"{TW}/{MOB_DASH}", "w", encoding="utf-8").write(mob_dash_html)
@@ -2481,7 +2497,7 @@ app_html = f'''<!DOCTYPE html>
 {_dark_css(CSS)}
 </style>
 <style>
-body{{width:100vw !important;height:100vh !important;min-width:768px;min-height:640px}}
+body{{width:100vw !important;height:100vh !important;min-width:390px;min-height:600px}}
 #root{{display:contents}}
 .start,.recbtn,.pausepill,.togrow .switch,.sdhead .x,.recsq{{cursor:pointer}}
 a{{cursor:pointer}}
