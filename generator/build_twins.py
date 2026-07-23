@@ -2491,6 +2491,79 @@ window.addEventListener('popstate', () => {
 go(location.hash.replace('#/', '') || 'sessions-dashboard', false);
 """
 
+# ---------- modal chunk pages (each modal = its own Figma artboard) ----------
+CHUNK_CSS_EXTRA = """
+body.chunk{width:auto;height:auto;min-width:0;min-height:0;overflow:visible;display:block;padding:40px;background:var(--bg)}
+.chunk .modal{width:400px;background:var(--card);border-radius:12px;padding:24px;box-shadow:0 8px 32px rgba(0,0,0,.25)}
+.chunk .modal h3{font-size:18px;font-weight:600;color:var(--ink);margin-bottom:12px}
+.chunk .modal p{font-size:14px;color:var(--n40);line-height:1.5;margin-bottom:8px}
+.chunk .mfield{margin-top:12px;padding:12px 16px;border-radius:8px;background:rgba(128,128,128,.1);font-size:14px;color:var(--n40)}
+.chunk .mact{display:flex;justify-content:flex-end;gap:8px;margin-top:20px}
+.chunk .ma{padding:10px 16px;border-radius:8px;font-size:14px;font-weight:500;color:var(--orange)}
+.chunk .ma.red{background:#D32F2F;color:#fff}
+.chunk .ma.primary{background:var(--orange);color:#fff}
+.chunk .mdlg{box-shadow:0 8px 32px rgba(0,0,0,.25)}
+"""
+
+def modal_chunk_html(title, inner):
+    return f'''<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{title}</title>
+{CAPTURE}
+<style>
+{fontfaces}
+{CSS}
+{CHUNK_CSS_EXTRA}
+</style>
+</head><body class="chunk">
+{inner}
+</body></html>'''
+
+CHUNK_FILES = []
+for slug, d in MODALS.items():
+    body = f'<div class="modal"><h3>{d["title"]}</h3>'
+    if d.get("body"): body += f'<p>{d["body"]}</p>'
+    if d.get("field"): body += f'<div class="mfield">{d["field"]}</div>'
+    if d.get("field2"): body += f'<div class="mfield" style="min-height:64px">{d["field2"]}</div>'
+    body += '<div class="mact">' + "".join(
+        f'<span class="ma{" red" if a.get("red") else ""}{" primary" if a.get("primary") else ""}">{a["t"]}</span>'
+        for a in d["actions"]) + '</div></div>'
+    fname = f"hedy-modal-{slug}-light.html"
+    html = modal_chunk_html(f'Hedy — Modal · {d["title"]} (Light)', body)
+    open(f"{TW}/{fname}", "w", encoding="utf-8").write(html)
+    dk = darken(html).replace("(Light)", "(Dark)")
+    open(f"{TW}/hedy-modal-{slug}-dark.html", "w", encoding="utf-8").write(dk)
+    CHUNK_FILES.append((d["title"], fname))
+
+# merge dialogs as chunks (strip the page overlay wrapper)
+for slug, title, dlg in [("merge-sessions", "Merge Sessions", merge_dialog),
+                         ("merge-config", "Merge Configuration", merge_config_dialog)]:
+    inner = dlg.replace('<div class="ovl">', '').rsplit('</div>', 1)[0]
+    fname = f"hedy-modal-{slug}-light.html"
+    html = modal_chunk_html(f'Hedy — Modal · {title} (Light)', inner)
+    open(f"{TW}/{fname}", "w", encoding="utf-8").write(html)
+    dk = darken(html).replace("(Light)", "(Dark)")
+    open(f"{TW}/hedy-modal-{slug}-dark.html", "w", encoding="utf-8").write(dk)
+    CHUNK_FILES.append((title, fname))
+
+# ---------- dashboard "artboard" variant: sort menu pinned open (capture-only) ----------
+ARTBOARD_MENU_CSS = """
+.popmenu{position:absolute;z-index:60;min-width:200px;background:var(--card);border:1px solid var(--border);border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.15);padding:4px}
+.pmi{display:flex;align-items:center;gap:10px;padding:0 14px;height:44px;border-radius:6px;font-size:14px;color:var(--ink)}
+.pmi.on{color:var(--orange);font-weight:600}
+"""
+_menu_open = ('<div class="popmenu" style="left:104px;top:104px">'
+              '<div class="pmi on">Most Recent</div><div class="pmi">Oldest</div>'
+              '<div class="pmi">Grouped by date</div></div>')
+art_html = dash_html.replace("</head>", f"<style>{ARTBOARD_MENU_CSS}</style></head>")
+art_html = art_html.replace('<div class="mob">', _menu_open + '\n<div class="mob">')
+art_html = art_html.replace("(Light, 1440)", "· Artboard (Light, 1440)")
+open(f"{TW}/hedy-sessions-dashboard-artboard-light-1440.html", "w", encoding="utf-8").write(art_html)
+art_dark = darken(art_html)
+open(f"{TW}/hedy-sessions-dashboard-artboard-dark-1440.html", "w", encoding="utf-8").write(art_dark)
+
 app_html = f'''<!DOCTYPE html>
 <html lang="en"><head>
 <meta charset="utf-8">
